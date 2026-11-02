@@ -74,3 +74,4 @@ Then navigate to `http://localhost:3000`.
 ├── Pages UI.pdf     # Reference UI design documentation
 └── README.md        # Project documentation
 ```
+
