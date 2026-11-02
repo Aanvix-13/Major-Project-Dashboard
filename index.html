@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Multi-Room Energy Manager - IoT Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon">
+          <!-- Zap Icon -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div class="brand-info">
+          <span class="brand-title">SMART ENERGY</span>
+          <span class="brand-sub">MULTI-ROOM IOT</span>
+        </div>
+      </div>
+
+      <div class="sidebar-nav-label">Telemetry Operations</div>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item active" data-page="overview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          Overview
+        </a>
+        <a class="nav-item" data-page="appliance">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+            <line x1="12" y1="2" x2="12" y2="12"></line>
+          </svg>
+          Appliance Control
+        </a>
+        <a class="nav-item" data-page="occupancy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4.93 19.07A10 10 0 0 1 19.07 4.93M7.76 16.24a6 6 0 0 1 8.48-8.48"></path>
+            <circle cx="12" cy="12" r="2"></circle>
+          </svg>
+          Occupancy Monitoring
+        </a>
+        <a class="nav-item" data-page="analytics">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+          Energy Analytics
+        </a>
+        <a class="nav-item" data-page="history">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          History & Reports
+        </a>
+        <a class="nav-item" data-page="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+          Settings
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="gateway-pill">
+          <div class="left">
+            <span class="dot"></span>
+            <span>Hub Gateway</span>
+          </div>
+          <span style="color: #64748b;">v2.4.12-r</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN RIGHT WRAPPER -->
+    <div class="main-wrapper">
+      
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar-status">
+          <span class="status-dot"></span>
+          <span id="topbar-status-text">ESP32 CONTROLLER: ONLINE • Hardware Testbed</span>
+        </div>
+
+        <div class="topbar-right">
+          <div class="demo-mode-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            DEMO MODE
+          </div>
+
+          <button class="icon-btn" id="btn-notifications" title="System Notifications">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="icon-badge"></span>
+          </button>
+
+          <button class="icon-btn" id="btn-sync" title="Sync Hardware Telemetry">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+          </button>
+
+          <button class="user-profile-btn" id="btn-profile-toggle" title="User Profile">
+            <div class="user-avatar">SJ</div>
+          </button>
+        </div>
+      </header>
+
+      <!-- USER PROFILE DROPDOWN MENU -->
+      <div class="dropdown-menu" id="profile-dropdown">
+        <div class="dropdown-header">
+          <div class="dropdown-user-name">Sarah Jenkins</div>
+          <div class="dropdown-user-role">Facility Admin • IoT Demonstrator</div>
+        </div>
+        <a class="dropdown-item" href="#settings" onclick="navigateToPage('settings')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          System Configuration
+        </a>
+        <div class="dropdown-item" onclick="triggerTelemetrySync()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+          Force Telemetry Poll
+        </div>
+        <div class="dropdown-item danger" onclick="resetDemoState()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+          Reset Demo State
+        </div>
+      </div>
+
+      <!-- PAGE VIEWS CONTAINER -->
+      <main class="page-container">
+
+        <!-- ================= PAGE 1: OVERVIEW ================= -->
+        <section id="view-overview" class="page-view active">
+          
+          <div class="page-header">
+            <div class="page-title-group">
+              <div class="title-row">
+                <h1 class="page-title">Overview</h1>
+                <span class="badge badge-grey">MINIATURE TESTBED</span>
+              </div>
+              <p class="page-subtitle">Smart Multi-Room Energy Manager</p>
+            </div>
+            <div class="header-status-pill">
+              <span class="status-dot"></span>
+              <span>System Online | Prototype Link: Active</span>
+            </div>
+          </div>
+
+          <!-- 4 Stat Metric Cards -->
+          <div class="stat-grid-4">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">TOTAL ROOMS</span>
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                    <line x1="9" y1="22" x2="9" y2="22.01"></line>
+                    <line x1="15" y1="22" x2="15" y2="22.01"></line>
+                    <line x1="9" y1="18" x2="9" y2="18.01"></line>
+                    <line x1="15" y1="18" x2="15" y2="18.01"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value" id="overview-total-rooms">3</span>
+              </div>
+              <span class="stat-subtext">Monitored Units</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">OCCUPIED ROOMS</span>
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value" id="overview-occupied-rooms">2 / 3</span>
+                <span class="badge badge-blue" id="overview-occupied-percent">67% Active</span>
+              </div>
+              <span class="stat-subtext">Active sensor detections</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">APPLIANCES ON</span>
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value" id="overview-appliances-on">3 / 6</span>
+              </div>
+              <span class="stat-subtext" id="overview-appliances-detail">1 Fan, 2 Lights active</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">SYSTEM STATUS</span>
+                <div class="stat-icon" style="background-color: var(--success-bg); color: var(--success);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <polyline points="9 12 11 14 15 10"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value" style="font-size: 20px; color: var(--success);">Online •</span>
+              </div>
+              <span class="stat-subtext">ESP32 Controller Connected</span>
+            </div>
+          </div>
+
+          <!-- Section: Room Overview -->
+          <div class="section-header">
+            <div class="section-title">
+              Room Overview
+              <span class="section-subtitle">Independent 3-room hardware status (LD2410C + DC Fan + LED Light)</span>
+            </div>
+            <span class="badge badge-grey">Physical Prototype 1:1 Scale</span>
+          </div>
+
+          <!-- 3 Room Cards -->
+          <div class="room-grid-3" id="overview-room-cards">
+            <!-- Dynamically populated by app.js -->
+          </div>
+
+          <!-- Two Columns: Energy Summary + Recent Activity -->
+          <div class="two-col-grid">
+            
+            <!-- Left: Energy Summary -->
+            <div class="card-block">
+              <div class="card-block-header">
+                <div class="card-block-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                  Energy Summary
+                </div>
+                <span class="badge badge-blue">HARDWARE STATUS: NOTICE</span>
+              </div>
+
+              <!-- Notice Box -->
+              <div class="notice-box">
+                <div class="notice-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                </div>
+                <div class="notice-content">
+                  <span class="notice-title">Energy measurement not connected</span>
+                  <p class="notice-text">CT sensor / power measurement hardware module not installed on physical prototype. Live Wattage & kWh monitoring will activate upon hardware module integration.</p>
+                </div>
+              </div>
+
+              <div class="metrics-row-2">
+                <div class="sub-metric-box">
+                  <div class="sub-metric-header">
+                    <span class="sub-metric-label">CURRENT POWER</span>
+                    <span class="badge badge-grey">Hardware Unlinked</span>
+                  </div>
+                  <div class="sub-metric-val">-- W</div>
+                  <span class="sub-metric-foot">Awaiting Current Transformer</span>
+                </div>
+                <div class="sub-metric-box">
+                  <div class="sub-metric-header">
+                    <span class="sub-metric-label">TOTAL CONSUMED</span>
+                    <span class="badge badge-grey">Hardware Unlinked</span>
+                  </div>
+                  <div class="sub-metric-val">-- kWh</div>
+                  <span class="sub-metric-foot">Accumulator Offline</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Recent Activity -->
+            <div class="card-block">
+              <div class="card-block-header">
+                <div class="card-block-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  Recent Activity
+                </div>
+                <span class="badge badge-grey">LIVE LOG</span>
+              </div>
+
+              <div class="activity-feed" id="overview-recent-activity">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Telemetry Status Bar -->
+          <div class="bottom-telemetry-bar">
+            <div class="bottom-telemetry-item">
+              <span class="status-dot"></span>
+              <span>Relay Telemetry Active</span>
+            </div>
+            <div>Hardware Prototype Testbed</div>
+            <div>Telemetry buffer synced</div>
+            <div id="overview-events-stored">Events: 3/3 Stored</div>
+          </div>
+
+        </section>
+
+
+        <!-- ================= PAGE 2: APPLIANCE CONTROL ================= -->
+        <section id="view-appliance" class="page-view">
+          
+          <div class="page-header">
+            <div class="page-title-group">
+              <div class="title-row">
+                <h1 class="page-title">Appliance Control</h1>
+                <span class="badge badge-grey">DEMO DATA</span>
+              </div>
+              <p class="page-subtitle">Control fans and lights in all three rooms. • <span style="color: var(--success); font-weight: 600;">ESP32 CONTROLLER: ONLINE</span></p>
+            </div>
+
+            <div class="appliance-control-header">
+              <span class="badge badge-blue">VACANCY AUTO-CUTOFF: ACTIVE</span>
+              <div class="btn-group">
+                <button class="btn btn-outline-primary" onclick="setMasterAppliances(true)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                  All Appliances ON
+                </button>
+                <button class="btn btn-outline-danger" onclick="setMasterAppliances(false)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+                  All Appliances OFF
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 KPI Cards -->
+          <div class="stat-grid-3">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">TOTAL MONITORED APPLIANCES</span>
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                  </svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value">6</span>
+              </div>
+              <span class="stat-subtext">3 Rooms • 2 Appliances / Room</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">APPLIANCES ACTIVE (ON)</span>
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value" id="appliance-active-count">3 ON</span>
+              </div>
+              <span class="stat-subtext" id="appliance-active-detail">Fan 1, Light 1, Light 2</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">APPLIANCES OFF</span>
+                <div class="stat-icon" style="background-color: #f1f5f9; color: #64748b;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                    <line x1="12" y1="2" x2="12" y2="12"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value" id="appliance-off-count">3 OFF</span>
+              </div>
+              <span class="stat-subtext" id="appliance-off-detail">Fan 2, Fan 3, Light 3</span>
+            </div>
+          </div>
+
+          <!-- Section Header -->
+          <div class="section-header">
+            <div class="section-title">
+              Room Appliance Controls
+              <span class="section-subtitle">Independent 3-room controls • 1 Fan & 1 Light per room • DEMO DATA</span>
+            </div>
+            <div style="font-size: 11px; color: var(--text-muted); display: flex; gap: 12px;">
+              <span><span style="color: var(--primary);">●</span> Active ON</span>
+              <span><span style="color: #94a3b8;">●</span> Standby OFF</span>
+              <span><span style="color: var(--warning);">●</span> Auto-Cutoff</span>
+            </div>
+          </div>
+
+          <!-- Room Controls 3 Columns -->
+          <div class="room-grid-3" id="appliance-room-cards">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Hardware Control & Feedback Logic (3 Cards) -->
+          <div class="section-header" style="margin-top: 14px;">
+            <div class="section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+              Hardware Control & Feedback Logic
+            </div>
+            <span class="badge badge-grey"># DEMO DATA</span>
+          </div>
+
+          <div class="three-info-cards">
+            <div class="info-card">
+              <div class="info-card-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                Command Pipeline
+              </div>
+              <p class="info-card-text">User toggle dispatches commands to controller. Actual state updates reliably upon hardware acknowledgment.</p>
+            </div>
+
+            <div class="info-card">
+              <div class="info-card-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                Independent Isolation
+              </div>
+              <p class="info-card-text">Vacant auto-cutoff isolates only that individual room node without altering other operational areas.</p>
+            </div>
+
+            <div class="info-card">
+              <div class="info-card-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                State Restoration
+              </div>
+              <p class="info-card-text">Prior user enable requests are securely stored to automatically restore power upon occupant re-entry.</p>
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- ================= PAGE 3: OCCUPANCY MONITORING ================= -->
+        <section id="view-occupancy" class="page-view">
+          
+          <div class="page-header">
+            <div class="page-title-group">
+              <div class="title-row">
+                <h1 class="page-title">Occupancy Monitoring</h1>
+                <span class="badge badge-grey">PROTOTYPE TESTBED</span>
+              </div>
+              <p class="page-subtitle">Monitor occupancy in all three rooms with independent LD2410C mmWave radar sensors.</p>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="header-status-pill">● Overall System: Online</span>
+              <span class="header-status-pill">Sensors Active: 3 / 3 Active</span>
+              <span class="badge badge-blue">SIMULATION MODE</span>
+            </div>
+          </div>
+
+          <!-- Interactive Demo Testing Control Bar -->
+          <div class="sim-controls-bar">
+            <div class="sim-controls-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Live Demo Testing Simulator:
+              <span class="badge badge-blue">Interactive Testbed Controls</span>
+            </div>
+            <div class="sim-room-actions">
+              <div class="sim-room-item">
+                <strong>Room 1:</strong>
+                <button class="btn-sim" id="sim-btn-r1-occ" onclick="setOccupancy(1, true)">Occupied</button>
+                <button class="btn-sim" id="sim-btn-r1-vac" onclick="setOccupancy(1, false)">Vacant</button>
+              </div>
+              <div class="sim-room-item">
+                <strong>Room 2:</strong>
+                <button class="btn-sim" id="sim-btn-r2-occ" onclick="setOccupancy(2, true)">Occupied</button>
+                <button class="btn-sim" id="sim-btn-r2-vac" onclick="setOccupancy(2, false)">Vacant</button>
+              </div>
+              <div class="sim-room-item">
+                <strong>Room 3:</strong>
+                <button class="btn-sim" id="sim-btn-r3-occ" onclick="setOccupancy(3, true)">Occupied</button>
+                <button class="btn-sim" id="sim-btn-r3-vac" onclick="setOccupancy(3, false)">Vacant</button>
+              </div>
+              <button class="btn-sim" style="background-color: #f59e0b; border-color: #f59e0b;" onclick="triggerFastCountdownTest()" title="Trigger 10s fast countdown on vacant rooms for instant testing">
+                ⚡ Fast 10s Demo Timer
+              </button>
+            </div>
+          </div>
+
+          <!-- 3 KPI Cards -->
+          <div class="stat-grid-3">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">OCCUPANCY RATIO</span>
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value" id="occupancy-kpi-ratio">2 / 3 Rooms Occupied</span>
+              </div>
+              <span class="stat-subtext" id="occupancy-kpi-ratio-sub">Room 1 & 2 • Room 3 Vacant</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">VACANCY AUTO-CUTOFF</span>
+                <div class="stat-icon" style="background-color: #eff6ff; color: var(--primary);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value" id="occupancy-kpi-countdown">1 Active Countdown</span>
+              </div>
+              <span class="stat-subtext" id="occupancy-kpi-countdown-sub">Room 3: 03:45 remaining (5m base)</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">SENSOR HARDWARE HEALTH</span>
+                <div class="stat-icon" style="background-color: var(--success-bg); color: var(--success);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value">3 / 3 Online</span>
+              </div>
+              <span class="stat-subtext">All LD2410C radar modules nominal</span>
+            </div>
+          </div>
+
+          <!-- Room Cards 3 Columns -->
+          <div class="room-grid-3" id="occupancy-room-cards">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Section: Spatial Miniature Prototype Visualization -->
+          <div class="visualization-container">
+            <div class="section-header" style="margin-bottom: 0;">
+              <div class="section-title">
+                Miniature Prototype Visualization
+                <span class="section-subtitle">Independent 3-room spatial detection layout with LD2410C coverage zones</span>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted); display: flex; gap: 12px;">
+                <span><span style="color: var(--primary);">●</span> Active Detection Field</span>
+                <span><span style="color: #94a3b8;">●</span> Boundary Beam</span>
+                <span><span style="color: #38bdf8;">●</span> mmWave Transceiver</span>
+              </div>
+            </div>
+
+            <div class="chambers-grid" id="occupancy-chambers-container">
+              <!-- Dynamically populated with radar animation & presence -->
+            </div>
+          </div>
+
+          <!-- Bottom Row: Sensor Hardware Summary & Recent Occupancy Events -->
+          <div class="two-col-grid">
+            <!-- Left: Hardware Table -->
+            <div class="card-block">
+              <div class="card-block-header">
+                <div class="card-block-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                  Sensor Hardware Status Summary
+                </div>
+                <span class="badge badge-grey">3/3 SYNCED</span>
+              </div>
+
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>SENSOR NODE</th>
+                    <th>HARDWARE PIN</th>
+                    <th>HEARTBEAT</th>
+                    <th>STATUS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Room 1 Sensor</strong><br><span style="font-size: 10px; color: var(--text-muted);">LD2410C #S-01</span></td>
+                    <td><span class="badge badge-grey">GPIO 21</span></td>
+                    <td>2s ago</td>
+                    <td><span style="color: var(--success); font-weight: 700;">● ONLINE</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Room 2 Sensor</strong><br><span style="font-size: 10px; color: var(--text-muted);">LD2410C #S-02</span></td>
+                    <td><span class="badge badge-grey">GPIO 22</span></td>
+                    <td>1s ago</td>
+                    <td><span style="color: var(--success); font-weight: 700;">● ONLINE</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Room 3 Sensor</strong><br><span style="font-size: 10px; color: var(--text-muted);">LD2410C #S-03</span></td>
+                    <td><span class="badge badge-grey">GPIO 23</span></td>
+                    <td>2s ago</td>
+                    <td><span style="color: var(--success); font-weight: 700;">● ONLINE</span></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div style="margin-top: 12px; font-size: 10.5px; color: var(--text-muted); line-height: 1.4;">
+                <strong>Countdown Isolation:</strong> Each room evaluates its own LD2410C state independently. Room 2's vacancy timeout does not alter or reset timers in Room 1 or Room 3.
+              </div>
+            </div>
+
+            <!-- Right: Recent Occupancy Events -->
+            <div class="card-block">
+              <div class="card-block-header">
+                <div class="card-block-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.93 19.07A10 10 0 0 1 19.07 4.93M7.76 16.24a6 6 0 0 1 8.48-8.48"></path><circle cx="12" cy="12" r="2"></circle></svg>
+                  Recent Occupancy Events
+                </div>
+                <span class="badge badge-grey">LIVE LOG</span>
+              </div>
+
+              <div class="activity-feed" id="occupancy-recent-events">
+                <!-- Dynamically populated -->
+              </div>
+
+              <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border-card); font-size: 10.5px; color: var(--text-muted); display: flex; justify-content: space-between;">
+                <span>Real-time buffer synchronized</span>
+                <span>Buffer ID: #TX-9021</span>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- ================= PAGE 4: ENERGY ANALYTICS ================= -->
+        <section id="view-analytics" class="page-view">
+          
+          <!-- Top Notice Banner -->
+          <div class="notice-box" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+              <div class="notice-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              </div>
+              <div class="notice-content">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="notice-title">Energy measurement hardware not connected</span>
+                  <span class="badge badge-amber">DEMO DATA</span>
+                </div>
+                <p class="notice-text">Physical DC energy sensor module is currently not connected to the testbed bus. Displayed telemetry values and charts represent sample benchmark readings for college prototype demonstration and multi-room automation validation.</p>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; margin-left: 20px; flex-shrink: 0;">
+              <span style="font-size: 11px; font-weight: 600; color: #475569;">Simulated Feed</span>
+              <label class="switch">
+                <input type="checkbox" checked id="analytics-sim-feed-toggle" onchange="toggleSimFeed(this.checked)">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="page-header">
+            <div class="page-title-group">
+              <div class="title-row">
+                <h1 class="page-title">Energy Analytics</h1>
+                <span class="badge badge-grey">DEMO DATA</span>
+              </div>
+              <p class="page-subtitle">Monitor energy consumption of the three-room prototype.</p>
+            </div>
+
+            <span class="header-status-pill">● 12V DC LOW-VOLTAGE RAIL</span>
+          </div>
+
+          <!-- 4 KPI Cards -->
+          <div class="stat-grid-4">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">TOTAL VOLTAGE (V)</span>
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value" id="analytics-voltage">12.0 V</span>
+              </div>
+              <span class="stat-subtext">Nominal DC Rail • DEMO DATA</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">TOTAL CURRENT (A)</span>
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value" id="analytics-current">1.45 A</span>
+              </div>
+              <span class="stat-subtext">Total Prototype Draw • DEMO DATA</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">CURRENT POWER (W)</span>
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value" id="analytics-power">17.4 W</span>
+              </div>
+              <span class="stat-subtext">DC Power Draw • DEMO DATA</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">TOTAL ENERGY (WH)</span>
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value" id="analytics-energy">186.2 Wh</span>
+              </div>
+              <span class="stat-subtext">Accumulated Energy • DEMO DATA</span>
+            </div>
+          </div>
+
+          <!-- Charts Row (2 columns) -->
+          <div class="two-col-grid">
+            
+            <!-- Left Chart: Power Consumption Area/Line Chart -->
+            <div class="chart-box">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">Prototype Power Consumption</div>
+                  <div class="chart-sub">Total measured DC power over time (Watts) • DEMO DATA</div>
+                </div>
+                <div class="chart-actions">
+                  <div class="pill-group">
+                    <button class="pill-btn active" id="chart-btn-today" onclick="switchPowerChart('today')">Today</button>
+                    <button class="pill-btn" id="chart-btn-7d" onclick="switchPowerChart('7d')">7 Days</button>
+                  </div>
+                  <span class="badge badge-blue">Peak: 22.8 W at 14:15</span>
+                </div>
+              </div>
+
+              <!-- SVG Area Chart -->
+              <div class="svg-chart-container" id="power-chart-container">
+                <!-- Dynamically rendered SVG Area Chart -->
+              </div>
+
+              <div class="chart-legend">
+                <div class="legend-item">
+                  <span class="legend-color-line"></span>
+                  <span>Aggregate DC Shunt Profile</span>
+                </div>
+                <div>Baseline Standby: ~2.1 W</div>
+              </div>
+            </div>
+
+            <!-- Right Chart: Energy Usage Bar Chart -->
+            <div class="chart-box">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">Energy Usage</div>
+                  <div class="chart-sub">Total energy consumed per day (Watt-hours / Wh) • DEMO DATA</div>
+                </div>
+                <div class="chart-actions">
+                  <span class="badge badge-grey">Last 7 Days</span>
+                  <span class="badge badge-blue">Weekly Total: 1,197.2 Wh</span>
+                </div>
+              </div>
+
+              <!-- SVG Bar Chart -->
+              <div class="svg-chart-container" id="energy-bar-chart-container">
+                <!-- Dynamically rendered SVG Bar Chart -->
+              </div>
+
+              <div class="chart-legend">
+                <div class="legend-item">
+                  <span class="legend-color-bar"></span>
+                  <span>Current Logging Period</span>
+                </div>
+                <div>Daily Avg: ~171 Wh</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Section: Room-wise Appliance Status -->
+          <div class="section-header">
+            <div class="section-title">
+              Room-wise Appliance Status
+              <span class="section-subtitle">Appliance status indicators only — individual room energy submetering is not installed on this prototype.</span>
+            </div>
+            <span class="badge badge-grey">Topology State</span>
+          </div>
+
+          <div class="room-grid-3" id="analytics-topology-cards">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Prototype Measurement Architecture & Integrity Rules (3 Columns) -->
+          <div class="card-block">
+            <div class="card-block-title" style="margin-bottom: 8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              Prototype Measurement Architecture & Integrity Rules
+            </div>
+
+            <div class="arch-grid-3">
+              <div class="arch-card">
+                <div class="arch-card-title">
+                  <span style="color: var(--primary);">1.</span> Low-Voltage DC Bus
+                </div>
+                <p class="arch-card-desc">Engineered exclusively for miniature 12V DC testbed operation (brushless DC fans and LED modules). High-voltage AC mains lines and industrial meters are excluded from the prototype scope.</p>
+              </div>
+
+              <div class="arch-card">
+                <div class="arch-card-title">
+                  <span style="color: var(--primary);">2.</span> Single Total Shunt Measurement
+                </div>
+                <p class="arch-card-desc">Gross power draw is captured at the central DC bus supply rail. Per-room electrical isolation is architectural only; individual appliance power breakdowns remain non-interpolated to avoid synthetic estimation.</p>
+              </div>
+
+              <div class="arch-card">
+                <div class="arch-card-title">
+                  <span style="color: var(--primary);">3.</span> Strict Telemetry Integrity
+                </div>
+                <p class="arch-card-desc">No synthetic tariff calculations, utility billing rates, or fabricated cost multipliers are generated. All energy analytics represent physical physical-layer Wh accumulations without statistical distortion.</p>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- ================= PAGE 5: HISTORY & REPORTS ================= -->
+        <section id="view-history" class="page-view">
+          
+          <div class="page-header">
+            <div class="page-title-group">
+              <div class="title-row">
+                <h1 class="page-title">History & Reports</h1>
+                <span class="badge badge-grey">3-ROOM PROTOTYPE TESTBED</span>
+              </div>
+              <p class="page-subtitle">View past room activity and prototype energy usage.</p>
+            </div>
+
+            <div class="btn-group">
+              <div class="pill-group">
+                <button class="pill-btn" onclick="setHistoryRange('today', this)">Today</button>
+                <button class="pill-btn active" onclick="setHistoryRange('7d', this)">Last 7 Days</button>
+                <button class="pill-btn" onclick="setHistoryRange('30d', this)">Last 30 Days</button>
+                <button class="pill-btn" onclick="setHistoryRange('custom', this)">Custom Range</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 KPI Cards -->
+          <div class="stat-grid-3">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">TOTAL ENERGY USED</span>
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value">18.6 kWh</span>
+              </div>
+              <span class="stat-subtext">Selected range (Last 7 Days) • 4.2% vs prev</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">AUTOMATIC SHUTDOWNS</span>
+                <div class="stat-icon" style="background-color: #eff6ff; color: var(--primary);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value">12 times</span>
+              </div>
+              <span class="stat-subtext">Vacancy-triggered shutoffs • ~1.9 kWh saved</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">APPLIANCE SWITCHING EVENTS</span>
+                <div class="stat-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                </div>
+              </div>
+              <div class="stat-value-row">
+                <span class="stat-value" id="history-total-events-count">34 events</span>
+              </div>
+              <span class="stat-subtext">Manual & automated switches • 100% actuated</span>
+            </div>
+          </div>
+
+          <!-- Energy Usage History Chart + Meter Summary Card -->
+          <div class="two-col-grid" style="grid-template-columns: 2fr 1fr;">
+            
+            <div class="chart-box">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">Energy Usage History</div>
+                  <div class="chart-sub">PZEM-016 / Prototype DC Bus: Daily electricity consumption recorded by master controller.</div>
+                </div>
+                <span class="badge badge-grey">Preview State</span>
+              </div>
+
+              <div class="svg-chart-container" id="history-chart-container">
+                <!-- SVG Bar Chart -->
+              </div>
+
+              <div class="chart-legend">
+                <div>DAILY CONSUMPTION (KWH) • Daily Load — Avg: 2.65 kWh</div>
+                <div>Peak: 3.4 kWh</div>
+              </div>
+            </div>
+
+            <!-- Meter Summary Card -->
+            <div class="card-block" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div class="card-block-title" style="margin-bottom: 14px;">METER SUMMARY</div>
+                
+                <div style="margin-bottom: 16px;">
+                  <span class="stat-label">Period Total</span>
+                  <div style="font-size: 24px; font-weight: 700; color: var(--text-main);">18.6 kWh</div>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                  <span class="stat-label">Estimated Period Cost</span>
+                  <div style="font-size: 22px; font-weight: 700; color: #10b981;">₹148.80</div>
+                  <span style="font-size: 10.5px; color: var(--text-muted);">@ ₹8.00 / kWh tariff</span>
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                  <span class="stat-label">Peak Consumption Day</span>
+                  <div style="font-size: 15px; font-weight: 700; color: var(--text-main);">Tuesday</div>
+                  <span style="font-size: 10.5px; color: var(--text-muted);">3.4 kWh • Above room avg</span>
+                </div>
+              </div>
+
+              <div style="padding-top: 10px; border-top: 1px dashed var(--border-card); font-size: 10.5px; color: var(--text-muted);">
+                Modbus address 0x01 aggregate stream validated
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Activity History Section -->
+          <div class="card-block">
+            <div class="card-block-header">
+              <div>
+                <div class="card-block-title">Activity History</div>
+                <div class="card-sub">Audit ledger for room occupancy transitions, energy cutoffs, and switches.</div>
+              </div>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="filter-bar">
+              <div class="category-tabs">
+                <button class="tab-btn active" onclick="filterHistoryTable('all', this)">All Events (34)</button>
+                <button class="tab-btn" onclick="filterHistoryTable('Occupancy', this)">Occupancy</button>
+                <button class="tab-btn" onclick="filterHistoryTable('Appliance', this)">Appliance Control</button>
+                <button class="tab-btn" onclick="filterHistoryTable('Automatic', this)">Automatic Actions</button>
+              </div>
+
+              <div class="search-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="history-search-input" placeholder="Search event description, appliance target, or type..." oninput="handleHistorySearch(this.value)">
+                <button class="btn btn-outline-secondary btn-sm" onclick="applyHistorySearch()">Filter</button>
+              </div>
+            </div>
+
+            <!-- Data Table -->
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 18%;">TIME</th>
+                  <th style="width: 42%;">EVENT DESCRIPTION</th>
+                  <th style="width: 22%;">APPLIANCE / TARGET</th>
+                  <th style="width: 18%;">EVENT TYPE</th>
+                </tr>
+              </thead>
+              <tbody id="history-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+
+            <!-- Pagination Bar -->
+            <div class="pagination-bar">
+              <span id="history-pagination-label">Showing 6 of 34 events</span>
+              <div class="page-nums">
+                <button class="page-num-btn active">1</button>
+                <button class="page-num-btn">2</button>
+                <button class="page-num-btn">3</button>
+                <button class="page-num-btn">4</button>
+                <span>...</span>
+                <button class="page-num-btn">6</button>
+                <button class="page-num-btn">&gt;</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Export Reports Card -->
+          <div class="card-block" style="margin-top: 20px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: flex-start; gap: 14px;">
+              <div class="stat-icon" style="background-color: var(--primary-light); color: var(--primary);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              </div>
+              <div>
+                <div style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">Export Reports</div>
+                <div style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Download logs and aggregated energy reports for the selected date range (Last 7 Days) and active event filters.<br>Includes timestamped event ledger & daily readings.</div>
+              </div>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-outline-primary" onclick="exportCSVReport()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                Download CSV
+              </button>
+              <button class="btn btn-primary" onclick="exportPDFReport()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Download PDF
+              </button>
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- ================= PAGE 6: SETTINGS ================= -->
+        <section id="view-settings" class="page-view">
+          
+          <div class="page-header">
+            <div class="page-title-group">
+              <div class="title-row">
+                <h1 class="page-title">Settings</h1>
+                <span class="badge badge-grey">PROTOTYPE TESTBED</span>
+              </div>
+              <p class="page-subtitle">Configure room automation and prototype preferences.</p>
+            </div>
+
+            <span class="header-status-pill">● 3 Rooms Configured</span>
+          </div>
+
+          <!-- Top Hardware Status Bar -->
+          <div class="stat-grid-4" style="margin-bottom: 20px;">
+            <div class="stat-card" style="padding: 12px 14px;">
+              <span class="stat-label">CONTROLLER</span>
+              <div style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-top: 4px;">ESP32 Controller</div>
+              <span style="font-size: 11px; color: var(--success); font-weight: 600;">● Online</span>
+            </div>
+            <div class="stat-card" style="padding: 12px 14px;">
+              <span class="stat-label">ROOM 1 SENSOR</span>
+              <div style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-top: 4px;">LD2410C #S-01</div>
+              <span style="font-size: 11px; color: var(--success); font-weight: 600;">● Online</span>
+            </div>
+            <div class="stat-card" style="padding: 12px 14px;">
+              <span class="stat-label">ROOM 2 SENSOR</span>
+              <div style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-top: 4px;">LD2410C #S-02</div>
+              <span style="font-size: 11px; color: var(--success); font-weight: 600;">● Online</span>
+            </div>
+            <div class="stat-card" style="padding: 12px 14px;">
+              <span class="stat-label">ROOM 3 SENSOR</span>
+              <div style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-top: 4px;">LD2410C #S-03</div>
+              <span style="font-size: 11px; color: var(--success); font-weight: 600;">● Online</span>
+            </div>
+          </div>
+
+          <!-- Section: Room-wise Automation Settings -->
+          <div class="section-header">
+            <div class="section-title">
+              Room-wise Automation Settings
+              <span class="section-subtitle">Independent per-room occupancy triggers and automatic energy-saving logic.</span>
+            </div>
+          </div>
+
+          <!-- Settings 3 Room Cards -->
+          <div class="room-grid-3" id="settings-room-cards">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Logic Explanatory Cards (3 Cards) -->
+          <div class="three-info-cards">
+            <div class="info-card">
+              <div class="info-card-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                Independent Room Isolation
+              </div>
+              <p class="info-card-text">Changing Room 1 settings has zero influence on Room 2 or Room 3 automation triggers.</p>
+            </div>
+
+            <div class="info-card">
+              <div class="info-card-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+                Automatic Energy Saving
+              </div>
+              <p class="info-card-text">Automatically switches OFF fan and light when room vacancy delay expires.</p>
+            </div>
+
+            <div class="info-card">
+              <div class="info-card-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                State Restoration
+              </div>
+              <p class="info-card-text">Preserves appliance enable state upon re-entry without manual intervention.</p>
+            </div>
+          </div>
+
+          <!-- Settings Footer Action Bar -->
+          <div class="settings-footer-bar">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="status-dot"></span>
+              <div>
+                <strong style="font-size: 12.5px; color: var(--text-main);">All 3 room configurations validated</strong>
+                <div style="font-size: 11px; color: var(--text-muted);">Ready to apply automation parameters to controller.</div>
+              </div>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-outline-secondary" onclick="resetSettingsToDefault()">
+                Reset to Default
+              </button>
+              <button class="btn btn-primary" onclick="saveSettings()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Save Changes
+              </button>
+            </div>
+          </div>
+
+        </section>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- FLOATING QUICK SIMULATOR (PRESENTATION BAR) -->
+  <div class="floating-demo-bar">
+    <span class="label">Demo Controls:</span>
+    <button class="room-quick-btn" id="float-r1-btn" onclick="toggleOccupancy(1)">R1: Occupied</button>
+    <button class="room-quick-btn" id="float-r2-btn" onclick="toggleOccupancy(2)">R2: Occupied</button>
+    <button class="room-quick-btn vacant" id="float-r3-btn" onclick="toggleOccupancy(3)">R3: Vacant (03:45)</button>
+    <button class="room-quick-btn" style="background-color: #2563eb;" onclick="triggerFastCountdownTest()">⚡ Fast 10s Test</button>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- MASTER SCRIPT -->
+  <script src="app.js"></script>
+</body>
+</html>
+
